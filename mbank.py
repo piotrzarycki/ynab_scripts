@@ -1,11 +1,11 @@
 import csv
 import argparse
+data = []
 
 parser = argparse.ArgumentParser(description='file input for parse bank information')
 parser.add_argument('--file', metavar='str', type=str)
 args = parser.parse_args()
 
-data = []
 with open(args.file, 'rb') as csvfile:
     reader = csv.reader(csvfile, delimiter=';')
     i = 0
@@ -15,11 +15,11 @@ with open(args.file, 'rb') as csvfile:
             i += 1
             continue
 
-        price = float(row[5].replace(',', '.').replace(' ', ''))
+        price = float(row[6].replace(',', '.').replace(' ', ''))
 
-        dataRow['Date'] = row[3]
-        dataRow['Payee'] = row[10].decode('cp1250').encode('UTF-8')
-        dataRow['Memo'] = row[7].decode('cp1250').encode('UTF-8')
+        dataRow['Date'] = row[0]
+        dataRow['Payee'] = row[4].decode('cp1250').encode('UTF-8')
+        dataRow['Memo'] = row[3].decode('cp1250').encode('UTF-8')
 
         if price < 0:
             dataRow['Outflow'] = abs(price)
@@ -31,7 +31,7 @@ with open(args.file, 'rb') as csvfile:
         data.append(dataRow)
         print dataRow
 
-with open('kontomierz.csv', 'wb') as csvfile:
+with open('mbank.csv', 'wb') as csvfile:
     fieldnames = ['Date', 'Payee', 'Memo', 'Outflow', 'Inflow']
     spamwriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
     spamwriter.writeheader()
